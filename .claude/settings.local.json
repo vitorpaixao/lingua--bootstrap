@@ -13,7 +13,24 @@
       "Bash(npm show *)",
       "Bash(node -e \"const d=require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\); const v=JSON.parse\\(d\\); console.log\\(v.slice\\(-10\\).join\\('\\\\n'\\)\\)\")",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "WebFetch(domain:ant-design.antgroup.com)",
+      "Bash(where antd *)",
+      "Bash(npm list *)",
+      "Bash(claude mcp *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\vitor\\\\Documents\\\\AI-projects\\\\lingua--bootstrap\" -Recurse -Depth 3)",
+      "Bash(Select-Object FullName)",
+      "Bash(npm ls *)",
+      "WebFetch(domain:procomponents.ant.design)",
+      "mcp__context7__resolve-library-id",
+      "WebSearch",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:beta-pro.ant.design)",
+      "WebFetch(domain:snyk.io)",
+      "WebFetch(domain:security.snyk.io)",
+      "Bash(rm src/App.css)",
+      "Bash(npm run *)"
     ]
   }
 }

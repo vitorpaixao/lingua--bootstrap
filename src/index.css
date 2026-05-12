@@ -6,15 +6,4 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #1a1a1a;
-  color: rgba(255, 255, 255, 0.87);
-  min-height: 100vh;
-}
-
-code {
-  font-family: ui-monospace, monospace;
-  background: #2a2a2a;
-  padding: 0.1em 0.3em;
-  border-radius: 3px;
 }
