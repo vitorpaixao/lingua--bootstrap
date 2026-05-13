@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Bubble, Sender, useXAgent, useXChat } from '@ant-design/x';
-import { Alert, Flex, Divider } from 'antd';
+import { Alert, Flex, Divider, Tag } from 'antd';
+import { RobotOutlined } from '@ant-design/icons';
 import { Client } from '@langchain/langgraph-sdk';
 import { HelpXPTrigger } from '../helpxp/HelpXPTrigger';
+import { useHelpXP } from '../helpxp/HelpXPContext';
 
 const LANGGRAPH_URL = import.meta.env.VITE_LANGGRAPH_URL ?? 'http://localhost:8765';
 const client = new Client({ apiUrl: LANGGRAPH_URL });
@@ -10,6 +12,7 @@ const client = new Client({ apiUrl: LANGGRAPH_URL });
 export const HelpChat: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
+  const { selectedContext, clearContext } = useHelpXP();
 
   const [agent] = useXAgent({
     request: async ({ message }, { onUpdate, onSuccess, onError }) => {
@@ -54,7 +57,11 @@ export const HelpChat: React.FC = () => {
   const { onRequest, messages } = useXChat({ agent });
 
   const handleSubmit = (msg: string) => {
-    onRequest(msg);
+    const augmented = selectedContext
+      ? `[Context: ${selectedContext.title}]\n${selectedContext.context}\n\nUser: ${msg}`
+      : msg;
+    onRequest(augmented);
+    clearContext();
     setInputValue('');
   };
 
@@ -82,10 +89,23 @@ export const HelpChat: React.FC = () => {
         />
       )}
       <Sender
+        header={
+          selectedContext ? (
+            <Tag
+              closable
+              onClose={clearContext}
+              icon={<RobotOutlined />}
+              color="orange"
+              style={{ margin: '4px 0 0 4px' }}
+            >
+              {selectedContext.title}
+            </Tag>
+          ) : undefined
+        }
         value={inputValue}
         onChange={setInputValue}
         onSubmit={handleSubmit}
-        style={{ marginTop: 8 }}
+        style={{ marginTop: 8, borderRadius: 4 }}
       />
     </Flex>
   );

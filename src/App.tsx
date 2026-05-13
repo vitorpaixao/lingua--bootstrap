@@ -34,7 +34,7 @@ export default function App() {
   const navigate = useNavigate()
 
   return (
-    <HelpXPProvider>
+    <HelpXPProvider onOpenHelp={() => setHelpOpen(true)}>
       <ConfigProvider
         theme={{
           algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
