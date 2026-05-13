@@ -6,6 +6,7 @@ import { ProTable } from '@ant-design/pro-components'
 import type { ProColumns } from '@ant-design/pro-components'
 import { getUsers, deleteUser } from '../data/mockUsers'
 import type { User } from '../data/mockUsers'
+import { HelpXPTarget } from '../helpxp/HelpXPTarget'
 
 export default function UserListPage() {
   const navigate = useNavigate()
@@ -78,23 +79,26 @@ export default function UserListPage() {
   ]
 
   return (
-    <ProTable<User>
-      rowKey="id"
-      columns={columns}
-      dataSource={users}
-      search={false}
-      toolBarRender={() => [
-        <Button
-          key="add"
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => navigate('/users/new')}
-        >
-          Add User
-        </Button>,
-      ]}
-      pagination={{ pageSize: 10 }}
-      headerTitle="Users"
-    />
+    <HelpXPTarget id="users-table" block>
+      <ProTable<User>
+        rowKey="id"
+        columns={columns}
+        dataSource={users}
+        search={false}
+        toolBarRender={() => [
+          <HelpXPTarget key="add" id="add-user">
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => navigate('/users/new')}
+            >
+              Add User
+            </Button>
+          </HelpXPTarget>,
+        ]}
+        pagination={{ pageSize: 10 }}
+        headerTitle="Users"
+      />
+    </HelpXPTarget>
   )
 }

@@ -7,3 +7,22 @@
 body {
   margin: 0;
 }
+
+@keyframes helpxp-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(250, 140, 22, 0.7); }
+  70%  { box-shadow: 0 0 0 8px rgba(250, 140, 22, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(250, 140, 22, 0); }
+}
+
+.helpxp-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #fa8c16;
+  cursor: pointer;
+  z-index: 1000;
+  animation: helpxp-pulse 1.4s infinite;
+}

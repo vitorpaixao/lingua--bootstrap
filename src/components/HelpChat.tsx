@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Bubble, Sender, useXAgent, useXChat } from '@ant-design/x';
-import { Alert, Flex } from 'antd';
+import { Alert, Flex, Divider } from 'antd';
 import { Client } from '@langchain/langgraph-sdk';
+import { HelpXPTrigger } from '../helpxp/HelpXPTrigger';
 
 const LANGGRAPH_URL = import.meta.env.VITE_LANGGRAPH_URL ?? 'http://localhost:8765';
 const client = new Client({ apiUrl: LANGGRAPH_URL });
@@ -59,6 +60,11 @@ export const HelpChat: React.FC = () => {
 
   return (
     <Flex vertical style={{ height: '100%', padding: 8 }}>
+      <Flex align="center" gap={8} style={{ marginBottom: 4 }}>
+        <HelpXPTrigger />
+        <span style={{ fontSize: 12, opacity: 0.6 }}>Highlight UI elements</span>
+      </Flex>
+      <Divider style={{ margin: '4px 0' }} />
       <Bubble.List
         style={{ flex: 1, overflow: 'auto' }}
         items={messages.map((m) => ({
