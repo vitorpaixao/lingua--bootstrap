@@ -12,7 +12,7 @@ const client = new Client({ apiUrl: LANGGRAPH_URL });
 export const HelpChat: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
-  const { selectedContext, clearContext } = useHelpXP();
+  const { selectedContexts, removeContext, clearAllContexts } = useHelpXP();
 
   const [agent] = useXAgent({
     request: async ({ message }, { onUpdate, onSuccess, onError }) => {
@@ -57,11 +57,12 @@ export const HelpChat: React.FC = () => {
   const { onRequest, messages } = useXChat({ agent });
 
   const handleSubmit = (msg: string) => {
-    const augmented = selectedContext
-      ? `[Context: ${selectedContext.title}]\n${selectedContext.context}\n\nUser: ${msg}`
-      : msg;
+    const prefix = selectedContexts
+      .map((c) => `[Context: ${c.title}]\n${c.context}`)
+      .join('\n\n');
+    const augmented = prefix ? `${prefix}\n\nUser: ${msg}` : msg;
     onRequest(augmented);
-    clearContext();
+    clearAllContexts();
     setInputValue('');
   };
 
@@ -74,10 +75,15 @@ export const HelpChat: React.FC = () => {
       <Divider style={{ margin: '4px 0' }} />
       <Bubble.List
         style={{ flex: 1, overflow: 'auto' }}
-        items={messages.map((m) => ({
-          role: m.status === 'local' ? 'user' : 'assistant',
-          content: m.message,
-        }))}
+        items={messages.map((m) => {
+          let content = m.message;
+          if (m.status === 'local' && content.startsWith('[Context:')) {
+            const userMarker = '\n\nUser: ';
+            const idx = content.lastIndexOf(userMarker);
+            if (idx !== -1) content = content.slice(idx + userMarker.length);
+          }
+          return { role: m.status === 'local' ? 'user' : 'assistant', content };
+        })}
       />
       {errorMsg && (
         <Alert
@@ -90,16 +96,20 @@ export const HelpChat: React.FC = () => {
       )}
       <Sender
         header={
-          selectedContext ? (
-            <Tag
-              closable
-              onClose={clearContext}
-              icon={<RobotOutlined />}
-              color="orange"
-              style={{ margin: '4px 0 0 4px' }}
-            >
-              {selectedContext.title}
-            </Tag>
+          selectedContexts.length > 0 ? (
+            <Flex wrap="wrap" gap={4} style={{ padding: '4px 0 0 4px' }}>
+              {selectedContexts.map((c) => (
+                <Tag
+                  key={c.id}
+                  closable
+                  onClose={() => removeContext(c.id)}
+                  icon={<RobotOutlined />}
+                  color="orange"
+                >
+                  {c.title}
+                </Tag>
+              ))}
+            </Flex>
           ) : undefined
         }
         value={inputValue}

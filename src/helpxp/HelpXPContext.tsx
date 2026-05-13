@@ -13,9 +13,10 @@ interface HelpXPContextValue {
   toggle: () => void;
   open: (id: string) => void;
   close: () => void;
-  selectedContext: SelectedContext | null;
+  selectedContexts: SelectedContext[];
   selectContext: (id: string) => void;
-  clearContext: () => void;
+  removeContext: (id: string) => void;
+  clearAllContexts: () => void;
 }
 
 const HelpXPContext = createContext<HelpXPContextValue | null>(null);
@@ -29,7 +30,7 @@ export function HelpXPProvider({
 }) {
   const [active, setActive] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
-  const [selectedContext, setSelectedContext] = useState<SelectedContext | null>(null);
+  const [selectedContexts, setSelectedContexts] = useState<SelectedContext[]>([]);
 
   const toggle = () => {
     setActive((a) => !a);
@@ -46,16 +47,23 @@ export function HelpXPProvider({
   const selectContext = (id: string) => {
     const item = HELPXP_ITEMS[id];
     if (!item) return;
-    setSelectedContext({ id, title: item.title, context: item.context ?? item.content });
+    setSelectedContexts((prev) =>
+      prev.some((c) => c.id === id)
+        ? prev
+        : [...prev, { id, title: item.title, context: item.context ?? item.content }]
+    );
     setOpenId(null);
     onOpenHelp?.();
   };
 
-  const clearContext = () => setSelectedContext(null);
+  const removeContext = (id: string) =>
+    setSelectedContexts((prev) => prev.filter((c) => c.id !== id));
+
+  const clearAllContexts = () => setSelectedContexts([]);
 
   return (
     <HelpXPContext.Provider
-      value={{ active, openId, toggle, open, close, selectedContext, selectContext, clearContext }}
+      value={{ active, openId, toggle, open, close, selectedContexts, selectContext, removeContext, clearAllContexts }}
     >
       {children}
     </HelpXPContext.Provider>
