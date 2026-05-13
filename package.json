@@ -11,6 +11,8 @@
   "dependencies": {
     "@ant-design/icons": "^6.2.2",
     "@ant-design/pro-components": "^2.8.10",
+    "@ant-design/x": "^1.6.1",
+    "@langchain/langgraph-sdk": "^1.9.2",
     "antd": "^5.29.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

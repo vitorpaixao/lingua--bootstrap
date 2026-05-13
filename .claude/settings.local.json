@@ -30,7 +30,9 @@
       "WebFetch(domain:snyk.io)",
       "WebFetch(domain:security.snyk.io)",
       "Bash(rm src/App.css)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Read(//mnt/c/Users/vitor/Documents/AI-projects/lingua--bootstrap/src/**)",
+      "Bash(powershell.exe -Command \"Get-Content 'C:\\\\\\\\Users\\\\\\\\vitor\\\\\\\\Documents\\\\\\\\AI-projects\\\\\\\\lingua--bootstrap\\\\\\\\src\\\\\\\\App.tsx'\")"
     ]
   }
 }

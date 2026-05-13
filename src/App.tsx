@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
-import { ConfigProvider, theme, Tooltip, Avatar, Drawer, Space } from 'antd'
+import { ConfigProvider, theme, Tooltip, Avatar, Space, Splitter } from 'antd'
 import { ProLayout, PageContainer } from '@ant-design/pro-components'
 import {
   HomeOutlined,
@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons'
 import UserListPage from './pages/UserListPage'
 import UserDetailPage from './pages/UserDetailPage'
+import { HelpChat } from './components/HelpChat'
 
 const routeConfig = {
   path: '/',
@@ -35,68 +36,71 @@ export default function App() {
         algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
     >
-      <ProLayout
-        route={routeConfig}
-        title="Lingua"
-        logo={<img src="/vite.svg" style={{ height: 28 }} alt="logo" />}
-        layout="side"
-        collapsed={collapsed}
-        onCollapse={setCollapsed}
-        style={{ minHeight: '100vh' }}
-        menuFooterRender={() => (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px' }}>
-            <Space>
-              <Avatar size="small" icon={<UserOutlined />} />
-              {!collapsed && <span>User</span>}
-            </Space>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px' }}>
-              <Space>
-                <Tooltip title="Help">
-                  <QuestionCircleOutlined
-                    style={{ cursor: 'pointer', fontSize: 16 }}
-                    onClick={() => setHelpOpen(true)}
-                  />
-                </Tooltip>
-              </Space>
-              <Space style={{ marginLeft: 16 }}>
-                <Tooltip
-                  key="theme"
-                  title={isDark ? 'Switch to light' : 'Switch to dark'}
-                >
-                  <span
-                    onClick={() => setIsDark(!isDark)}
-                    style={{ cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center' }}
-                  >
-                    {isDark ? <SunOutlined /> : <MoonOutlined />}
-                  </span>
-                </Tooltip>
-              </Space>
-            </div>
+      <Splitter style={{ height: '100vh' }}>
 
-          </div>
-        )}
-        menuItemRender={(item, dom) => (
-          <Link to={item.path ?? '/'}>{dom}</Link>
-        )}
-        onMenuHeaderClick={() => navigate('/')}
-      >
-        <PageContainer breadcrumbRender={false}>
-          <Routes>
-            <Route path="/" element={<div />} />
-            <Route path="/users" element={<UserListPage />} />
-            <Route path="/users/new" element={<UserDetailPage />} />
-            <Route path="/users/:id" element={<UserDetailPage />} />
-            <Route path="/settings" element={<div />} />
-          </Routes>
-        </PageContainer>
-      </ProLayout>
+        <Splitter.Panel defaultSize="70%">
+          <ProLayout
+            route={routeConfig}
+            title="Lingua"
+            logo={<img src="/vite.svg" style={{ height: 28 }} alt="logo" />}
+            layout="side"
+            collapsed={collapsed}
+            onCollapse={setCollapsed}
+            style={{ height: '100%' }}
+            menuFooterRender={() => (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px' }}>
+                <Space>
+                  <Avatar size="small" icon={<UserOutlined />} />
+                  {!collapsed && <span>User</span>}
+                </Space>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '0 8px' }}>
+                  <Tooltip title="Help">
+                    <QuestionCircleOutlined
+                      style={{ cursor: 'pointer', fontSize: 16 }}
+                      onClick={() => setHelpOpen(!helpOpen)}
+                    />
+                  </Tooltip>
+                  <Tooltip title={isDark ? 'Switch to light' : 'Switch to dark'}>
+                    <span
+                      onClick={() => setIsDark(!isDark)}
+                      style={{ cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center' }}
+                    >
+                      {isDark ? <SunOutlined /> : <MoonOutlined />}
+                    </span>
+                  </Tooltip>
+                </div>
+              </div>
+            )}
+            menuItemRender={(item, dom) => (
+              <Link to={item.path ?? '/'}>{dom}</Link>
+            )}
+            onMenuHeaderClick={() => navigate('/')}
+          >
+            <PageContainer breadcrumbRender={false}>
+              <Routes>
+                <Route path="/" element={<div />} />
+                <Route path="/users" element={<UserListPage />} />
+                <Route path="/users/new" element={<UserDetailPage />} />
+                <Route path="/users/:id" element={<UserDetailPage />} />
+                <Route path="/settings" element={<div />} />
+              </Routes>
+            </PageContainer>
+          </ProLayout>
+        </Splitter.Panel>
 
-      <Drawer
-        title="Help"
-        open={helpOpen}
-        onClose={() => setHelpOpen(false)}
-        width={400}
-      />
+        {helpOpen && (
+          <Splitter.Panel defaultSize="30%" min={180}>
+            <PageContainer
+              title="Help"
+              breadcrumbRender={false}
+              
+            >
+              <HelpChat />
+            </PageContainer>
+          </Splitter.Panel>
+        )}
+
+      </Splitter>
     </ConfigProvider>
   )
 }

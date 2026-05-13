@@ -40,7 +40,11 @@ git fetch bootstrap && git merge bootstrap/main
 lingua-bootstrap/
 ├── package.json              ← React 19, Vite 8, TypeScript ~6
 ├── vite.config.ts            ← host 0.0.0.0, port 3000, polling HMR
-├── src/                      ← starter app
+├── src/
+│   ├── components/
+│   │   └── HelpChat.tsx      ← AI chat panel (connects to lingua--helper-agent)
+│   ├── pages/                ← app pages
+│   └── App.tsx               ← layout, routing, help panel toggle
 ├── opencode.json             ← model, MCP, subagent definitions
 └── .opencode/
     ├── agents/               ← frontend-builder, git-helper subagents
@@ -48,6 +52,58 @@ lingua-bootstrap/
     ├── tools/                ← custom TS tools (extension point)
     └── prompts/system.txt    ← shared system instructions
 ```
+
+## AI Helper Panel
+
+A collapsible help panel is built into the layout. Click the `?` icon in the sidebar footer to open it. The panel contains a streaming AI chat backed by a LangGraph agent ([lingua--helper-agent](../lingua--helper-agent)).
+
+### How it works
+
+```
+User types message
+  → HelpChat.tsx creates a LangGraph thread
+  → streams a run against the 'agent' graph
+  → messages/partial SSE chunks update the bubble in real time
+  → onSuccess called with the final accumulated response
+```
+
+### Component: `src/components/HelpChat.tsx`
+
+- Uses `@ant-design/x` (`useXAgent`, `useXChat`, `Bubble.List`, `Sender`) for the chat UI
+- Uses `@langchain/langgraph-sdk` `Client` to talk to the LangGraph dev server
+- Server URL read from `VITE_LANGGRAPH_URL` env var (default: `http://localhost:8765`)
+- Shows an `Alert` with a helpful message if the agent server is not reachable
+
+### Environment configuration
+
+Create a `.env` file from the example:
+
+```bash
+cp .env.example .env
+# edit VITE_LANGGRAPH_URL if needed
+```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VITE_LANGGRAPH_URL` | `http://localhost:8765` | URL of the lingua--helper-agent server |
+
+### Running the helper agent
+
+The agent must be running before the chat panel is usable. Two options:
+
+**Docker (recommended):**
+```bash
+cd ../lingua--helper-agent
+docker compose up -d   # port 8765
+```
+
+**Local dev:**
+```bash
+cd ../lingua--helper-agent
+uv run langgraph dev --port 8765
+```
+
+See [lingua--helper-agent README](../lingua--helper-agent/README.md) for full setup.
 
 ## Customising
 
