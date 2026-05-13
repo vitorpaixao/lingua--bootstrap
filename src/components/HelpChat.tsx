@@ -6,7 +6,7 @@ import { Client } from '@langchain/langgraph-sdk';
 import { HelpXPTrigger } from '../helpxp/HelpXPTrigger';
 import { useHelpXP } from '../helpxp/HelpXPContext';
 
-const LANGGRAPH_URL = import.meta.env.VITE_LANGGRAPH_URL ?? 'http://localhost:8765';
+const LANGGRAPH_URL = import.meta.env.VITE_LANGGRAPH_URL ?? `http://${window.location.hostname}:8765`;
 const client = new Client({ apiUrl: LANGGRAPH_URL });
 
 export const HelpChat: React.FC = () => {
@@ -46,7 +46,7 @@ export const HelpChat: React.FC = () => {
         const err = e as Error;
         const msg =
           err.message.includes('Failed to fetch') || err.message.includes('ERR_CONNECTION_REFUSED')
-            ? 'Agent server not reachable. Run: cd lingua--helper-agent && uv run langgraph dev (port 2024)'
+            ? 'Agent server not reachable. Start Docker: cd lingua--helper-agent && docker compose up'
             : err.message;
         setErrorMsg(msg);
         onError(err);
